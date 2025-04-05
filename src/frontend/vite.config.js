@@ -11,5 +11,6 @@ export default {
   preview: {
     host: '0.0.0.0',
     port: process.env.PORT || 4173,
+    allowedHosts: ['letunblur-frontend.onrender.com'], // ← das ist der wichtige Part!
   }
 };
