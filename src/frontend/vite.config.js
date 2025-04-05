@@ -2,22 +2,22 @@ import { defineConfig } from 'vite';
 import path from 'path';
 
 export default defineConfig({
-  root: '.', // dein Startpunkt ist der aktuelle Ordner
+  root: '.', // Startpunkt des Projekts, aktuelles Verzeichnis
   build: {
-    outDir: 'dist', // wohin gebaut wird
+    outDir: 'dist', // Zielordner für den Build
   },
   resolve: {
     alias: {
-      '/src': path.resolve(__dirname, './src'),
+      '/src': path.resolve(__dirname, './src'), // Alias für '/src'
     },
   },
   server: {
-    host: '0.0.0.0', // wichtig für lokale & Cloud-Deployments
-    port: process.env.PORT || 4173,
+    host: '0.0.0.0', // Wichtig für lokale und Cloud-Deployments
+    port: process.env.PORT || 4173, // Port, falls nicht in der Umgebung gesetzt
   },
   preview: {
-    host: '0.0.0.0',
-    port: process.env.PORT || 4173,
-    allowedHosts: ['letunblur-frontend.onrender.com'], // ✅ damit Render funktioniert
+    host: '0.0.0.0', // Preview-Server-Host
+    port: process.env.PORT || 4173, // Preview-Server-Port
+    allowedHosts: ['letunblur-frontend.onrender.com'], // Hier fügst du die erlaubte Domain hinzu
   }
 });
