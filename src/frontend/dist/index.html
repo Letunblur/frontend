@@ -25,44 +25,91 @@
       margin: 40px 0 20px;
     }
   </style>
-  <script type="module" crossorigin src="/assets/index-C9OEVDKp.js"></script>
 </head>
 <body>
+  <!-- Login Formular -->
+  <div id="loginForm">
+    <h2>Anmeldung</h2>
+    <input type="email" id="loginEmail" placeholder="E-Mail" required /><br>
+    <input type="password" id="loginPassword" placeholder="Passwort" required /><br>
+    <button onclick="login()">Anmelden</button>
+    <p>Oder <a href="#" onclick="showRegister()">Registrieren</a></p>
+  </div>
 
-  <h1>🔓 LetUnblur – Medien hochladen</h1>
+  <!-- Registrierungsformular (optional) -->
+  <div id="registerForm" style="display:none;">
+    <h2>Registrieren</h2>
+    <input type="email" id="registerEmail" placeholder="E-Mail" required /><br>
+    <input type="password" id="registerPassword" placeholder="Passwort" required /><br>
+    <button onclick="register()">Registrieren</button>
+    <p>Schon ein Konto? <a href="#" onclick="showLogin()">Zurück zur Anmeldung</a></p>
+  </div>
 
-  <input type="file" id="fileInput" accept="image/*,application/pdf,video/mp4" /><br>
-
-  <label for="email">E-Mail:</label>
-  <input type="email" id="email" required />
-
-  <label for="price">Preis (€):</label>
-  <input type="number" id="price" value="5" min="1" />
-
-  <button id="uploadButton">📤 Link generieren</button>
-
-  <div id="output" style="margin-top:20px;"></div>
-
-  <div id="preview" style="display:none;">
-    <p>✅ Upload erfolgreich! Vorschau:</p>
-    <img id="previewImage" src="" alt="Bildvorschau" />
-    <br>
-    <button onclick="bezahlen()">💳 Jetzt bezahlen</button>
+  <!-- Upload Formular (zeigt sich nur nach Anmeldung) -->
+  <div id="uploadForm" style="display:none;">
+    <h1>🔓 LetUnblur – Medien hochladen</h1>
+    <input type="file" id="fileInput" accept="image/*,application/pdf,video/mp4" /><br>
+    <label for="email">E-Mail:</label>
+    <input type="email" id="email" required />
+    <label for="price">Preis (€):</label>
+    <input type="number" id="price" value="5" min="1" />
+    <button id="uploadButton">📤 Link generieren</button>
   </div>
 
   <hr>
 
-  <h2>⚠️ Missbrauch melden</h2>
+  <script>
+    // Zeigt das Anmeldeformular an
+    function showLogin() {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('registerForm').style.display = 'none';
+    }
 
-  <input type="text" id="link" placeholder="Gemeldeter Link" />
-  <input type="text" id="name" placeholder="Dein Name" />
-  <input type="email" id="reportEmail" placeholder="Deine E-Mail" />
-  <textarea id="reason" rows="4" placeholder="Grund der Meldung"></textarea>
-  <button onclick="sendReport()">🚨 Meldung absenden</button>
+    // Zeigt das Registrierungsformular an
+    function showRegister() {
+      document.getElementById('registerForm').style.display = 'block';
+      document.getElementById('loginForm').style.display = 'none';
+    }
 
-  <div id="reportOutput" style="margin-top:10px;"></div>
+    // Anmeldung
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
 
-  <!-- ✅ Vite Module-Skripte -->
+      // Überprüfen, ob Benutzer in localStorage existiert
+      const storedEmail = localStorage.getItem('email');
+      const storedPassword = localStorage.getItem('password');
+
+      if (email === storedEmail && password === storedPassword) {
+        // Anmeldung erfolgreich
+        localStorage.setItem('isLoggedIn', 'true');
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('uploadForm').style.display = 'block';
+      } else {
+        alert('Falsche E-Mail oder Passwort');
+      }
+    }
+
+    // Registrierung
+    function register() {
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+
+      // Speichern der Benutzerdaten im localStorage
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
+      alert('Registrierung erfolgreich! Jetzt anmelden.');
+      showLogin();
+    }
+
+    // Überprüfen, ob der Benutzer bereits angemeldet ist
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('uploadForm').style.display = 'block';
+    } else {
+      showLogin();
+    }
+  </script>
 
 </body>
 </html>
