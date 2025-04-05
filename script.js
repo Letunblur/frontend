@@ -1,8 +1,3 @@
-// 🔄 Für LetUnblur: Upload & Bezahlung
-
-let uploadedFileId = "";
-let uploadedFileUrl = "";
-
 async function upload() {
   const file = document.getElementById("fileInput")?.files?.[0];
   const email = document.getElementById("email")?.value;
@@ -13,96 +8,70 @@ async function upload() {
     return;
   }
 
-  const formData = new FormData();
-  formData.append("file", file);
+  const user = await supabase.auth.getUser();
+  const user_id = user?.data?.user?.id;
 
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!res.ok) {
-    document.getElementById("output").innerText = "❌ Upload fehlgeschlagen.";
+  if (!user_id) {
+    alert("Du musst eingeloggt sein, um hochzuladen.");
     return;
   }
 
-  const data = await res.json();
-  uploadedFileUrl = data.link;
-  uploadedFileId = data.link.split("/").pop();
-
-  const previewImage = document.getElementById("previewImage");
-  const previewBox = document.getElementById("preview");
-  if (previewImage && previewBox) {
-    previewImage.src = uploadedFileUrl;
-    previewBox.style.display = "block";
-  }
-
-  document.getElementById("output").innerText = "✅ Upload erfolgreich!";
-}
-
-async function bezahlen() {
-  const email = document.getElementById("email")?.value;
-  const price = document.getElementById("price")?.value;
-
-  const res = await fetch("/api/create-checkout-session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      amount: parseInt(price) * 100,
-      email: email,
-      fileId: uploadedFileId,
-    }),
-  });
-
-  const data = await res.json();
-  if (data.url) {
-    window.location.href = data.url;
-  } else {
-    alert("❌ Fehler bei der Bezahlung.");
-  }
-}
-
-// 🛡️ Meldesystem (Report-Funktion)
-
-async function sendReport() {
-  const reportedLink = document.getElementById("link")?.value;
-  const name = document.getElementById("name")?.value;
-  const email = document.getElementById("reportEmail")?.value;
-  const reason = document.getElementById("reason")?.value;
-  const output = document.getElementById("reportOutput");
-
-  if (!reportedLink || !name || !email || !reason) {
-    output.innerHTML = "❌ Bitte alle Felder ausfüllen.";
-    return;
-  }
-
-  output.innerHTML = "⏳ Bericht wird gesendet...";
+  const fileName = `${Date.now()}-${file.name}`;
+  const filePath = `media_uploads/${user_id}/${fileName}`;
 
   try {
-    const res = await fetch("http://localhost:8000/", {
+    // 1. Datei in Supabase hochladen
+    const { error: uploadError } = await supabase.storage
+      .from("media_uploads")
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    // 2. Öffentliche URL generieren
+    const { publicURL, error: urlError } = supabase
+      .storage
+      .from("media_uploads")
+      .getPublicUrl(filePath);
+
+    if (urlError) throw urlError;
+
+    uploadedFileUrl = publicURL;
+    uploadedFileId = fileName;
+
+    // 3. Metadaten an dein Node.js Backend senden
+    const res = await fetch("/api/upload", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        reportId: crypto.randomUUID(),
-        reportedLink,
-        name,
-        email,
-        reason,
-        createdAt: new Date().toISOString(),
+        user_id,
+        file_name: fileName,
+        price,
+        title: file.name,
+        description: "Hochgeladen von User",
       }),
     });
 
-    const data = await res.json();
+    const result = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.error || "Unbekannter Fehler");
+    if (!result.success) {
+      throw new Error("Fehler beim Speichern der Metadaten.");
     }
 
-    output.innerHTML = "✅ Meldung erfolgreich gesendet!";
-  } catch (err) {
-    console.error(err);
-    output.innerHTML = `❌ Fehler beim Senden:<br><code>${err.message}</code>`;
+    // 4. Vorschau anzeigen
+    const previewImage = document.getElementById("previewImage");
+    const previewBox = document.getElementById("preview");
+    if (previewImage && previewBox) {
+      previewImage.src = uploadedFileUrl;
+      previewBox.style.display = "block";
+    }
+
+    document.getElementById("output").innerHTML = `
+      ✅ Upload erfolgreich!<br>
+      🔗 <a href="${result.link}" target="_blank">${result.link}</a>
+    `;
+
+  } catch (error) {
+    console.error(error);
+    document.getElementById("output").innerText = `❌ Fehler beim Upload: ${error.message}`;
   }
 }
