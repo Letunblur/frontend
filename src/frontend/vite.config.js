@@ -1,7 +1,15 @@
 // vite.config.js
 export default {
-  root: '.',            // Stelle sicher, dass im selben Ordner alles liegt
+  root: '.',
   build: {
-    outDir: 'dist',     // Output-Ordner für Render
+    outDir: 'dist',
   },
+  server: {
+    host: '0.0.0.0',
+    port: process.env.PORT || 4173,
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: process.env.PORT || 4173,
+  }
 };
