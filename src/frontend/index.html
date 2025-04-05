@@ -63,10 +63,9 @@
 
   <!-- ✅ Module-Skripte für Vite -->
   <script type="module">
-    import "/src/js/imageLoader.js";
-    import { upload } from "/script.js";
+    import "../src/js/imageLoader.js"; // ✅ KORREKTER Pfad relativ zur index.html
+    import { upload } from "./script.js";
 
-    // Klick-Handler setzen (damit es auch sicher funktioniert)
     document.getElementById("uploadButton")?.addEventListener("click", upload);
   </script>
 
