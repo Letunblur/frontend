@@ -61,9 +61,9 @@
 
   <div id="reportOutput" style="margin-top:10px;"></div>
 
-  <!-- ✅ Module-Skripte für Vite -->
+  <!-- ✅ Vite Module-Skripte -->
   <script type="module">
-    import "../src/js/imageLoader.js"; // ✅ KORREKTER Pfad relativ zur index.html
+    import "./src/js/imageLoader.js"; // 🔧 korrekt relativ!
     import { upload } from "./script.js";
 
     document.getElementById("uploadButton")?.addEventListener("click", upload);
