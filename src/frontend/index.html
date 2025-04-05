@@ -28,25 +28,42 @@
 </head>
 <body>
 
-  <h1>🔓 LetUnblur – Medien hochladen</h1>
+  <!-- Login Formular -->
+  <div id="loginForm">
+    <h2>Anmeldung</h2>
+    <input type="email" id="loginEmail" placeholder="E-Mail" required /><br>
+    <input type="password" id="loginPassword" placeholder="Passwort" required /><br>
+    <button onclick="login()">Anmelden</button>
+    <p>Oder <a href="#" onclick="showRegister()">Registrieren</a></p>
+  </div>
 
-  <input type="file" id="fileInput" accept="image/*,application/pdf,video/mp4" /><br>
+  <!-- Registrierungsformular (wird standardmäßig verborgen) -->
+  <div id="registerForm" style="display:none;">
+    <h2>Registrieren</h2>
+    <input type="email" id="registerEmail" placeholder="E-Mail" required /><br>
+    <input type="password" id="registerPassword" placeholder="Passwort" required /><br>
+    <button onclick="register()">Registrieren</button>
+    <p>Schon ein Konto? <a href="#" onclick="showLogin()">Zurück zur Anmeldung</a></p>
+  </div>
 
-  <label for="email">E-Mail:</label>
-  <input type="email" id="email" required />
+  <!-- Upload Formular (zeigt sich nur nach Anmeldung) -->
+  <div id="uploadForm" style="display:none;">
+    <h1>🔓 LetUnblur – Medien hochladen</h1>
+    <input type="file" id="fileInput" accept="image/*,application/pdf,video/mp4" /><br>
+    <label for="email">E-Mail:</label>
+    <input type="email" id="email" required />
+    <label for="price">Preis (€):</label>
+    <input type="number" id="price" value="5" min="1" />
+    <button id="uploadButton">📤 Link generieren</button>
 
-  <label for="price">Preis (€):</label>
-  <input type="number" id="price" value="5" min="1" />
+    <div id="output" style="margin-top:20px;"></div>
 
-  <button id="uploadButton">📤 Link generieren</button>
-
-  <div id="output" style="margin-top:20px;"></div>
-
-  <div id="preview" style="display:none;">
-    <p>✅ Upload erfolgreich! Vorschau:</p>
-    <img id="previewImage" src="" alt="Bildvorschau" />
-    <br>
-    <button onclick="bezahlen()">💳 Jetzt bezahlen</button>
+    <div id="preview" style="display:none;">
+      <p>✅ Upload erfolgreich! Vorschau:</p>
+      <img id="previewImage" src="" alt="Bildvorschau" />
+      <br>
+      <button onclick="bezahlen()">💳 Jetzt bezahlen</button>
+    </div>
   </div>
 
   <hr>
@@ -63,7 +80,54 @@
 
   <!-- ✅ Vite Module-Skripte -->
   <script type="module">
-    import "./src/js/imageLoader.js"; // 🔧 korrekt relativ!
+    // Funktion, um das Login-Formular anzuzeigen
+    function showLogin() {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('uploadForm').style.display = 'none'; // sicherstellen, dass Upload-Form nicht angezeigt wird
+    }
+
+    // Funktion für die Anmeldung
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      // Überprüfen, ob Benutzer in localStorage existiert
+      const storedEmail = localStorage.getItem('email');
+      const storedPassword = localStorage.getItem('password');
+
+      if (email === storedEmail && password === storedPassword) {
+        // Anmeldung erfolgreich
+        localStorage.setItem('isLoggedIn', 'true');
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('uploadForm').style.display = 'block';
+      } else {
+        alert('Falsche E-Mail oder Passwort');
+      }
+    }
+
+    // Funktion für die Registrierung
+    function register() {
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+
+      // Speichern der Benutzerdaten im localStorage
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
+      alert('Registrierung erfolgreich! Jetzt anmelden.');
+      showLogin();
+    }
+
+    // Überprüfen, ob der Benutzer bereits eingeloggt ist
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('uploadForm').style.display = 'block';
+    } else {
+      showLogin();
+    }
+
+    // Der bestehende Import für das Bild-Upload-Skript
+    import "./src/js/imageLoader.js"; 
     import { upload } from "./script.js";
 
     document.getElementById("uploadButton")?.addEventListener("click", upload);
