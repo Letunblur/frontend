@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>LetUnblur – Datei freigeschaltet</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    .box {
+      border: 1px solid #ccc;
+      padding: 25px;
+      border-radius: 8px;
+    }
+    a.download-link {
+      display: inline-block;
+      margin-top: 20px;
+      background: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>✅ Vielen Dank für deinen Kauf!</h1>
+    <p>Deine Datei wurde erfolgreich freigeschaltet.</p>
+
+    <p>Falls der Download nicht automatisch startet, klicke unten:</p>
+
+    <a id="downloadLink" class="download-link" href="#">📥 Datei herunterladen</a>
+  </div>
+
+  <script>
+    // Hole file=xyz aus der URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileId = urlParams.get('file');
+
+    if (fileId) {
+      const downloadUrl = `/uploads/${fileId}`;
+      const link = document.getElementById("downloadLink");
+      link.href = downloadUrl;
+
+      // Automatisch starten nach 2 Sekunden
+      setTimeout(() => {
+        window.location.href = downloadUrl;
+      }, 2000);
+    } else {
+      document.querySelector(".box").innerHTML = "<h1>⚠️ Keine Datei gefunden.</h1>";
+    }
+  </script>
+
+</body>
+</html>

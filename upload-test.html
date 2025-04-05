@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Datei Upload Test</title>
+</head>
+<body>
+  <h1>Datei hochladen</h1>
+  <input type="file" id="fileInput" />
+  <p id="status"></p>
+
+  <script type="module">
+    import { uploadFile } from './uploadFile.js';
+
+    const fileInput = document.getElementById('fileInput');
+    const status = document.getElementById('status');
+
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      status.textContent = 'Lade hoch...';
+
+      const result = await uploadFile(file);
+      status.textContent = result
+        ? 'Upload erfolgreich!'
+        : 'Fehlgeschlagen';
+    });
+  </script>
+</body>
+</html>

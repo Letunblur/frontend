@@ -1,9 +1,66 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Letunblur App</title>
-  </head>
-  <body>
-    <h1>Letunblur MVP läuft!</h1>
-  </body>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>LetUnblur – Upload & Meldung</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+    img {
+      max-width: 100%;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    hr {
+      margin: 40px 0 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔓 LetUnblur – Medien hochladen</h1>
+
+  <input type="file" id="fileInput" accept="image/*,application/pdf,video/mp4" /><br>
+
+  <label for="email">E-Mail:</label>
+  <input type="email" id="email" required />
+
+  <label for="price">Preis (€):</label>
+  <input type="number" id="price" value="5" min="1" />
+
+  <button onclick="upload()">📤 Link generieren</button>
+
+  <div id="output" style="margin-top:20px;"></div>
+
+  <div id="preview" style="display:none;">
+    <p>✅ Upload erfolgreich! Vorschau:</p>
+    <img id="previewImage" src="" alt="Bildvorschau" />
+    <br>
+    <button onclick="bezahlen()">💳 Jetzt bezahlen</button>
+  </div>
+
+  <hr>
+
+  <h2>⚠️ Missbrauch melden</h2>
+
+  <input type="text" id="link" placeholder="Gemeldeter Link" />
+  <input type="text" id="name" placeholder="Dein Name" />
+  <input type="email" id="reportEmail" placeholder="Deine E-Mail" />
+  <textarea id="reason" rows="4" placeholder="Grund der Meldung"></textarea>
+  <button onclick="sendReport()">🚨 Meldung absenden</button>
+
+  <div id="reportOutput" style="margin-top:10px;"></div>
+
+  <script src="script.js"></script>
+</body>
 </html>
