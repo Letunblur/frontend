@@ -2,14 +2,15 @@
   "name": "app",
   "version": "1.0.0",
   "description": "Dies ist der MVP-Code deiner App.",
-  "main": "main.js",
+  "main": "src/backend/server.js",
   "scripts": {
-  "start": "node src/backend/server.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
+    "start": "node src/backend/server.js",
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Letunblur/app.git"
+    "url": "https://github.com/Letunblur/app.git"
   },
   "keywords": [],
   "author": "",
