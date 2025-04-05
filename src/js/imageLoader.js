@@ -1,7 +1,6 @@
 // Datei: src/js/imageLoader.js
-
 if (window.hasRunImageLoader) {
-  console.log("ImageLoader bereits ausgeführt – skip");
+  console.log("⏩ imageLoader wurde bereits geladen – Abbruch.");
 } else {
   window.hasRunImageLoader = true;
 
@@ -13,13 +12,16 @@ if (window.hasRunImageLoader) {
 
     document.addEventListener("DOMContentLoaded", async () => {
       const slug = window.location.pathname.split("/buy/")[1];
+      if (!slug) return console.warn("⚠️ Kein Slug gefunden");
+
       console.log("📦 Slug:", slug);
 
+      // Nur einmalige Abfrage ohne Sessionbindung
       const { data, error } = await supabase
         .from("file_metadata")
         .select("id, title, description, price, preview_url, slug")
         .eq("slug", slug)
-        .single();
+        .maybeSingle(); // ⚠️ gibt `null` zurück statt Fehler bei nicht gefunden
 
       console.log("🔍 Supabase Response:", { data, error });
 
@@ -29,28 +31,33 @@ if (window.hasRunImageLoader) {
       }
 
       document.body.innerHTML = `
-        <h1>${data.title}</h1>
-        <p>${data.description}</p>
+        <h1>${data.title || "📷 Unbenanntes Bild"}</h1>
+        <p>${data.description || "Keine Beschreibung vorhanden"}</p>
         <p><strong>Preis:</strong> €${parseFloat(data.price).toFixed(2)}</p>
-        <img src="${data.preview_url}" style="max-width:100%;filter:blur(15px);">
+        <img src="${data.preview_url}" style="max-width:100%;filter:blur(15px);border-radius:12px;box-shadow:0 0 10px rgba(0,0,0,0.2);">
+        <br><br>
         <input type="email" id="email" placeholder="Deine E-Mail">
         <button id="pay">💳 Jetzt bezahlen</button>
-        <button id="report">🚨 Melden</button>
+        <button id="report" style="margin-left: 10px;">🚨 Melden</button>
       `;
 
       document.getElementById("pay").addEventListener("click", async () => {
         const email = document.getElementById("email").value;
+        if (!email) return alert("Bitte gib deine E-Mail ein");
+
         const res = await fetch("/api/create-checkout-session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: Math.round(parseFloat(data.price) * 100),
+            amount: Math.round(parseFloat(data.price) * 100), // Stripe expects Cent
             email,
             fileId: data.id,
           }),
         });
+
         const json = await res.json();
         if (json.url) window.location.href = json.url;
+        else alert("Fehler bei Stripe-Weiterleitung");
       });
 
       document.getElementById("report").addEventListener("click", () => {
