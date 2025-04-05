@@ -82,8 +82,14 @@ async function upload() {
       🔗 <a href="${result.link}" target="_blank">${result.link}</a>
     `;
 
+  // ... dein kompletter Code davor bleibt unverändert
+
   } catch (error) {
     console.error(error);
     document.getElementById("output").innerText = `❌ Fehler beim Upload: ${error.message}`;
   }
 }
+
+// 👇 das hinzufügen:
+window.upload = upload;
+
