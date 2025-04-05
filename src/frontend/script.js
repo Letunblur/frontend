@@ -10,7 +10,7 @@ const BASE_URL = 'https://letunblur-backend.onrender.com';
 let uploadedFileUrl = '';
 let uploadedFileId = '';
 
-async function upload() {
+export async function upload() {
   const file = document.getElementById("fileInput")?.files?.[0];
   const email = document.getElementById("email")?.value;
   const price = document.getElementById("price")?.value;
@@ -32,14 +32,12 @@ async function upload() {
   const filePath = `media_uploads/${user_id}/${fileName}`;
 
   try {
-    // 1. Datei hochladen
     const { error: uploadError } = await supabase.storage
       .from("media_uploads")
       .upload(filePath, file);
 
     if (uploadError) throw uploadError;
 
-    // 2. Öffentliche URL erzeugen
     const { publicURL, error: urlError } = supabase
       .storage
       .from("media_uploads")
@@ -50,7 +48,6 @@ async function upload() {
     uploadedFileUrl = publicURL;
     uploadedFileId = fileName;
 
-    // 3. Metadaten an Backend senden
     const res = await fetch(`${BASE_URL}/api/upload`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -69,7 +66,6 @@ async function upload() {
       throw new Error("Fehler beim Speichern der Metadaten.");
     }
 
-    // 4. Vorschau anzeigen
     const previewImage = document.getElementById("previewImage");
     const previewBox = document.getElementById("preview");
     if (previewImage && previewBox) {
@@ -82,14 +78,8 @@ async function upload() {
       🔗 <a href="${result.link}" target="_blank">${result.link}</a>
     `;
 
-  // ... dein kompletter Code davor bleibt unverändert
-
   } catch (error) {
     console.error(error);
     document.getElementById("output").innerText = `❌ Fehler beim Upload: ${error.message}`;
   }
 }
-
-// 👇 das hinzufügen:
-window.upload = upload;
-
