@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite';
 import path from 'path';
+import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
+  plugins: [svgr()],
   root: '.', // Startpunkt des Projekts, aktuelles Verzeichnis
   build: {
     outDir: 'dist', // Zielordner für den Build
