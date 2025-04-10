@@ -4,4 +4,5 @@ export const de: Record<string, string> = {
   privateAccessDesc: "Nur für autorisierte Nutzer sichtbar",
   totalClicks: "Gesamte Klicks",
   dashboard: "Dashboard",
+  linkClickActivity: "Linkklick-Aktivität"
 }
