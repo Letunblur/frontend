@@ -1,13 +1,8 @@
-// src/hooks/useAuthSession.ts
-import { useEffect, useState } from 'react'
-import supabase from '../lib/supabaseClient'
-import { Tables, TablesUpdate } from '../../types/supabase'
-import { updateUserProfile as updateProfileInDB } from '../utils/authUtils'
-
-type UserProfile = Tables<'user_profiles'>
-type UpdateProfileInput = TablesUpdate<'user_profiles'>
+import { useEffect, useState, useRef } from 'react' // 🆕 useRef
+// ... Rest bleibt gleich ...
 
 export function useAuthSession() {
+  const hasFetched = useRef(false) // 🆕 neu
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -16,6 +11,9 @@ export function useAuthSession() {
   // 🔄 Profil abrufen
   useEffect(() => {
     const fetchUser = async () => {
+      if (hasFetched.current) return // 🛑 Falls schon geladen, abbrechen
+      hasFetched.current = true      // ✅ Nur beim ersten Mal
+
       setLoading(true)
       setError(null)
 
@@ -49,7 +47,7 @@ export function useAuthSession() {
     fetchUser()
   }, [])
 
-  // ✏️ Profil aktualisieren (via authUtils.ts)
+  // ✏️ Profil aktualisieren (wie gehabt)
   const updateUserProfile = async (updates: UpdateProfileInput) => {
     setIsUpdating(true)
     setError(null)
