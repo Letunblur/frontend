@@ -1,24 +1,12 @@
-import AuthBox from '../components/AuthBox';
-import TokenViewer from '../components/TokenViewer';
+import PaypalIcon from "@/components/icons/PaypalIcon";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main
-      style={{
-        padding: '2rem',
-        fontFamily: 'sans-serif',
-        maxWidth: '600px',
-        margin: '0 auto',
-      }}
-    >
-      <h1>🔥 Das ist meine eigene Seite!</h1>
-      <p>Logge dich unten ein, um dein Supabase-Token zu sehen:</p>
-
-      {/* 🔐 Login / Logout */}
-      <AuthBox />
-
-      {/* 🔑 Token anzeigen */}
-      <TokenViewer />
+    <main style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+      <div style={{ textAlign: "center" }}>
+        <PaypalIcon className="w-16 h-auto text-blue-600" />
+        <p style={{ marginTop: "1rem", fontSize: "1.25rem" }}>Mit PayPal bezahlen</p>
+      </div>
     </main>
   );
 }
