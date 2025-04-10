@@ -1,0 +1,7 @@
+export { de } from "./de"
+export { en } from "./en"
+export { fr } from "./fr"
+export { es } from "./es"
+export { ja } from "./ja"
+export { ar } from "./ar"
+export { zh } from "./zh"
